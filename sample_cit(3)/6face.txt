@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>BOX</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body,html {
+                margin: 0px;
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                position: relative;
+            }
+            .header {
+                position: absolute;
+                top: 30px;
+                left: 30px;
+                z-index: 10;
+            }
+        </style>
+    </head>
+    <body>
+ 
+        <script src="../js/three.min.js"></script>
+        <script src="../js/controls/TrackballControls.js"></script>
+        <script>
+            scene = new THREE.Scene();
+ 
+            // ブラウザのサイズ取得
+            var broweseSizeX = window.innerWidth;
+            var broweseSizeY = window.innerHeight;
+ 
+            // -------------------------------------------------------
+            // カメラ
+            // -------------------------------------------------------
+            // カメラの初期設定
+            var fov    = 80;
+            var aspect = broweseSizeX / broweseSizeY;
+            var near   = 1;
+            var far    = 1000;     
+ 
+            // カメラの設置
+            camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
+            camera.position.z = 500;
+            scene.add( camera );
+ 
+            // マウスでカメラを動かす
+            trackball = new THREE.TrackballControls( camera );
+ 
+            // -------------------------------------------------------
+            // ライト
+            // -------------------------------------------------------
+            // ライティング
+            var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 ); //平行光源（色、強度）
+            directionalLight.position.set(0,0,3);
+            scene.add( directionalLight );
+ 
+            var ambientLight = new THREE.AmbientLight( 0x333333); //平行光源（色、強度）
+            scene.add( ambientLight );
+ 
+            // -------------------------------------------------------
+            // オブジェクト
+            // -------------------------------------------------------
+            // 立方体
+            var geometry = new THREE.BoxGeometry(200,200,200);  // 立方体を用意
+ 
+            //6面分のマテリアルを生成
+            var materials = [
+                new THREE.MeshLambertMaterial({map:THREE.ImageUtils.loadTexture("images/texture00.png")}),
+                new THREE.MeshLambertMaterial({map:THREE.ImageUtils.loadTexture("images/texture01.png")}),
+                new THREE.MeshLambertMaterial({map:THREE.ImageUtils.loadTexture("images/texture02.png")}),
+                new THREE.MeshLambertMaterial({map:THREE.ImageUtils.loadTexture("images/texture03.png")}),
+                new THREE.MeshLambertMaterial({map:THREE.ImageUtils.loadTexture("images/texture04.png")}),
+                new THREE.MeshLambertMaterial({map:THREE.ImageUtils.loadTexture("images/texture05.png")}),
+            ];
+ 
+            var material = new THREE.MeshFaceMaterial(materials); // マテリアルをセット
+            var cube = new THREE.Mesh( geometry, material); // 立方体にマテリアルを適用
+            cube.rotation.x = 0.5;
+            cube.rotation.y = 0.5;
+            scene.add( cube ); // シーンに追加
+ 
+            // -------------------------------------------------------
+            // レンダラー
+            // -------------------------------------------------------
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild(renderer.domElement);
+                        
+            // -------------------------------------------------------
+            // アニメーション
+            // -------------------------------------------------------
+            function animate () {   
+                // 立方体を回転
+                cube.rotation.z += 0.01;
+                requestAnimationFrame( animate );
+ 
+                // レンダリングを呼び出し
+                rendering();
+            }
+ 
+            // -------------------------------------------------------
+            // レンダリング
+            // -------------------------------------------------------
+            function rendering() {
+                // レンダリング
+                renderer.render( scene, camera );
+ 
+                // マウスコントロール
+                trackball.update();
+            }
+ 
+            animate();
+        </script>
+        <h1 class="header">
+            <a href="http://www.conekuto.com" target="_blank">
+                <img src="http://www.conekuto.com/wp-content/uploads/2015/03/logo01.png" alt="コネクト" scale="0">
+            </a>
+        </h1>
+ 
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-59385562-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+ 
+    </body>
+</html>
